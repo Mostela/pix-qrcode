@@ -1,6 +1,6 @@
-from model.merchant_account import MerchantAccount
-from model.pix import Pix
-from utils.crc16 import crc16
+from pixqrcode.model.merchant_account import MerchantAccount
+from pixqrcode.model.pix import Pix
+from pixqrcode.utils.crc16 import crc16
 
 
 class GenerateCode:

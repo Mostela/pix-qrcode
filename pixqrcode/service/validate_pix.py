@@ -1,8 +1,8 @@
 import re
 
-from model.pix_error import PixError
-from model.pix import Pix
-from utils.format_values import FormatValues
+from pixqrcode.model.pix_error import PixError
+from pixqrcode.model.pix import Pix
+from pixqrcode.utils.format_values import FormatValues
 
 
 class ValidatePix:
@@ -52,7 +52,6 @@ class ValidatePix:
             raise PixError("telefone nao informado")
 
         self.pix.mobile = FormatValues.mobile(self.pix.mobile)
-        print(self.pix.mobile)
         if not re.match(r'^.55[\d]{3}', self.pix.mobile):
             if not re.match(r'^55[\d]{3}', self.pix.mobile):
                 self.pix.mobile = f"+55{self.pix.mobile}"
