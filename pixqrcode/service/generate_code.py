@@ -1,7 +1,8 @@
 from pixqrcode.model.merchant_account import MerchantAccount
 from pixqrcode.model.pix import Pix
 from pixqrcode.utils.crc16 import crc16
-
+from pixqrcode.service.validate_pix import ValidatePix
+import re
 
 class GenerateCode:
     def __init__(self):
@@ -11,7 +12,11 @@ class GenerateCode:
         return str(len(text)).zfill(2)
 
     def generate(self, pix: Pix):
-        return f"00020126360014{self.merchant.globally_unique_identifier}0114{pix.mobile}520400005303986540" \
+        valPix = ValidatePix(pix)
+        detect_type = valPix.detect_type_key
+        code = detect_type()
+
+        return f"00020126360014{self.merchant.globally_unique_identifier}{code}{pix.mobile}520400005303986540" \
         f"{len(pix.amount.__str__())}{pix.amount.__str__()}5802{pix.country_code}59{self.left_zero(pix.name)}" \
             f"{pix.name}60{self.left_zero(pix.city)}{pix.city}" \
             f"62{str(len(pix.reference_label) + 4).zfill(2)}05{self.left_zero(pix.reference_label)}" \
