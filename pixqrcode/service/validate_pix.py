@@ -42,10 +42,11 @@ class ValidatePix:
         return True
 
     def reference_label(self):
-        if not self.pix.reference_label:
-            self.pix.reference_label = "***"
-        else:
-            self.pix.reference_label = FormatValues.texts_no_space(self.pix.reference_label)
+        self.pix.reference_label = (
+            FormatValues.texts_no_space(self.pix.reference_label)
+            if self.pix.reference_label
+            else "***"
+        )
 
     def validateCPF(self):
         cpf = self.pix.mobile
@@ -55,12 +56,12 @@ class ValidatePix:
         if len(numbers) != 11 or len(set(numbers)) == 1:
             return False
 
-        sum_of_products = sum(a*b for a, b in zip(numbers[0:9], range(10, 1, -1)))
+        sum_of_products = sum(a*b for a, b in zip(numbers[:9], range(10, 1, -1)))
         expected_digit = (sum_of_products * 10 % 11) % 10
         if numbers[9] != expected_digit:
             return False
 
-        sum_of_products = sum(a*b for a, b in zip(numbers[0:10], range(11, 1, -1)))
+        sum_of_products = sum(a*b for a, b in zip(numbers[:10], range(11, 1, -1)))
         expected_digit = (sum_of_products * 10 % 11) % 10
         if numbers[10] != expected_digit:
             return False
@@ -118,10 +119,11 @@ class ValidatePix:
         if code == '0114':
             self.pix.mobile = FormatValues.mobile(self.pix.mobile)
             if not re.match(r'^.55[\d]{3}', self.pix.mobile):
-                if not re.match(r'^55[\d]{3}', self.pix.mobile):
-                    self.pix.mobile = f"+55{self.pix.mobile}"
-                else:
-                    self.pix.mobile = f"+{self.pix.mobile}"
+                self.pix.mobile = (
+                    f"+{self.pix.mobile}"
+                    if re.match(r'^55[\d]{3}', self.pix.mobile)
+                    else f"+55{self.pix.mobile}"
+                )
 
             if 14 > len(self.pix.mobile) < 14:
                 raise PixError("telefone curto ou longo")
